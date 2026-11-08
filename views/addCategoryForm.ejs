@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= title %> | GameVault</title>
+
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-white">
+
+    <header class="border-b border-slate-800 bg-slate-950">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <a href="/" class="text-2xl font-black tracking-tight">
+          Game<span class="text-cyan-400">Vault</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm font-medium text-slate-300">
+          <a href="/" class="transition hover:text-cyan-400">
+            Games
+          </a>
+
+          <a href="/categories" class="transition hover:text-cyan-400">
+            Categories
+          </a>
+
+          <a
+            href="/games/new"
+            class="rounded-lg bg-cyan-400 px-4 py-2 font-bold text-slate-950 transition hover:bg-cyan-300"
+          >
+            Add Game
+          </a>
+
+          <button id="theme-toggle" type="button" aria-label="Toggle light and dark theme" class="rounded-lg border border-slate-700 px-3 py-2 text-lg transition hover:border-cyan-400"><span id="theme-icon">☀️</span></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-6 py-12">
+
+      <a
+        href="/categories"
+        class="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition hover:text-cyan-400"
+      >
+        <span>←</span>
+        Back to categories
+      </a>
+
+      <section class="mt-8 rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-2xl sm:p-10">
+
+        <div class="mb-8">
+          <p class="text-sm font-bold uppercase tracking-[0.25em] text-cyan-400">
+            Inventory management
+          </p>
+
+          <h1 class="mt-3 text-4xl font-black tracking-tight">
+            Add a new category
+          </h1>
+
+          <p class="mt-4 text-slate-400">
+            Create a category to organize your game inventory.
+          </p>
+        </div>
+
+        <form
+          action="/categories/new"
+          method="POST"
+          class="space-y-6"
+        >
+
+          <div>
+            <label
+              for="title"
+              class="mb-2 block text-sm font-bold text-slate-200"
+            >
+              Category title
+            </label>
+
+            <input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="For example: Horror"
+              required
+              class="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-cyan-400"
+            >
+          </div>
+
+          <div>
+            <label
+              for="description"
+              class="mb-2 block text-sm font-bold text-slate-200"
+            >
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              name="description"
+              rows="6"
+              placeholder="Describe the type of games in this category..."
+              required
+              class="w-full resize-y rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-cyan-400"
+            ></textarea>
+          </div>
+
+          <div class="flex flex-wrap gap-3 border-t border-slate-800 pt-6">
+            <button
+              type="submit"
+              class="rounded-lg bg-cyan-400 px-6 py-3 font-bold text-slate-950 transition hover:bg-cyan-300"
+            >
+              Add category
+            </button>
+
+            <a
+              href="/categories"
+              class="rounded-lg border border-slate-700 px-6 py-3 font-bold text-slate-300 transition hover:border-cyan-400 hover:text-cyan-400"
+            >
+              Cancel
+            </a>
+          </div>
+
+        </form>
+      </section>
+
+    </main>
+
+  </body>
+
+  <script>
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = savedTheme ? savedTheme === "dark" : prefersDark;
+    document.documentElement.classList.toggle("dark", isDark);
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
+    function updateThemeIcon() {
+      const darkMode = document.documentElement.classList.contains("dark");
+      themeIcon.textContent = darkMode ? "☀️" : "🌙";
+      themeToggle.setAttribute("aria-label", darkMode ? "Switch to light theme" : "Switch to dark theme");
+    }
+    updateThemeIcon();
+    themeToggle.addEventListener("click", () => {
+      const darkMode = document.documentElement.classList.toggle("dark");
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+      updateThemeIcon();
+    });
+  </script>
+</html>

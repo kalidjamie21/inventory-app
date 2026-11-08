@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= title %> | GameVault</title>
+
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-white">
+
+    <header class="border-b border-slate-800 bg-slate-950">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <a href="/" class="text-2xl font-black tracking-tight">
+          Game<span class="text-cyan-400">Vault</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm font-medium text-slate-300">
+          <a href="/" class="transition hover:text-cyan-400">
+            Games
+          </a>
+
+          <a href="/categories" class="text-cyan-400">
+            Categories
+          </a>
+
+          <a
+            href="/games/new"
+            class="rounded-lg bg-cyan-400 px-4 py-2 font-bold text-slate-950 transition hover:bg-cyan-300"
+          >
+            Add Game
+          </a>
+
+          <button id="theme-toggle" type="button" aria-label="Toggle light and dark theme" class="rounded-lg border border-slate-700 px-3 py-2 text-lg transition hover:border-cyan-400"><span id="theme-icon">☀️</span></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-6 py-12">
+
+      <section class="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+        <div>
+          <p class="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-cyan-400">
+            Organize your collection
+          </p>
+
+          <h1 class="text-4xl font-black tracking-tight sm:text-5xl">
+            Game Categories
+          </h1>
+
+          <p class="mt-4 max-w-2xl text-lg text-slate-400">
+            Browse and manage the categories used throughout your game inventory.
+          </p>
+        </div>
+
+        <a
+          href="/categories/new"
+          class="inline-flex items-center justify-center rounded-lg bg-cyan-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+        >
+          + Add Category
+        </a>
+      </section>
+
+      <% if (typeof error !== "undefined" && error) { %>
+        <div class="mb-8 rounded-lg border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-300">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <% if (categories.length === 0) { %>
+
+        <section class="rounded-2xl border border-dashed border-slate-700 p-12 text-center">
+          <h2 class="text-2xl font-bold">
+            No categories found
+          </h2>
+
+          <p class="mt-3 text-slate-400">
+            Create your first category to organize your games.
+          </p>
+
+          <a
+            href="/categories/new"
+            class="mt-6 inline-block rounded-lg bg-cyan-400 px-5 py-3 font-bold text-slate-950 transition hover:bg-cyan-300"
+          >
+            Add a category
+          </a>
+        </section>
+
+      <% } else { %>
+
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+          <% categories.forEach((category) => { %>
+
+            <%
+              const categoryName = category.title.toLowerCase();
+
+              let categoryIcon = "🎮";
+
+              if (categoryName.includes("action")) {
+                categoryIcon = "⚔️";
+              } else if (categoryName.includes("rpg")) {
+                categoryIcon = "🧙";
+              } else if (categoryName.includes("strategy")) {
+                categoryIcon = "♟️";
+              } else if (categoryName.includes("sports")) {
+                categoryIcon = "🏆";
+              } else if (categoryName.includes("racing")) {
+                categoryIcon = "🏎️";
+              } else if (categoryName.includes("adventure")) {
+                categoryIcon = "🗺️";
+              }
+            %>
+
+            <article
+              class="group flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl transition duration-300 hover:-translate-y-1 hover:border-cyan-400/70 hover:shadow-cyan-400/10"
+            >
+
+              <div>
+                <div class="mb-5 flex items-center justify-between">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-cyan-400/10 text-3xl">
+                    <%= categoryIcon %>
+                  </div>
+                </div>
+
+                <h2 class="text-2xl font-black transition group-hover:text-cyan-400">
+                  <%= category.title %>
+                </h2>
+
+                <p class="mt-4 min-h-20 leading-7 text-slate-400">
+                  <%= category.description || "No description available." %>
+                </p>
+              </div>
+
+              <div class="mt-8 flex flex-wrap gap-3">
+
+                <a
+                  href="/?category=<%= category.id %>"
+                  class="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+                >
+                  View Games
+                </a>
+
+                <a
+                  href="/categories/<%= category.id %>/edit"
+                  class="rounded-lg border border-slate-700 px-4 py-2 text-sm font-bold text-slate-300 transition hover:border-cyan-400 hover:text-cyan-400"
+                >
+                  Edit
+                </a>
+
+                <button
+                  type="button"
+                  onclick="document.getElementById('delete-category-modal-<%= category.id %>').showModal()"
+                  class="rounded-lg border border-red-400/40 px-4 py-2 text-sm font-bold text-red-400 transition hover:bg-red-400 hover:text-slate-950"
+                >
+                  Delete
+                </button>
+
+              </div>
+            </article>
+
+            <dialog
+              id="delete-category-modal-<%= category.id %>"
+              class="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-0 text-white shadow-2xl backdrop:bg-slate-950/80"
+            >
+              <div class="p-8">
+
+                <p class="text-sm font-bold uppercase tracking-[0.2em] text-red-400">
+                  Admin confirmation
+                </p>
+
+                <h2 class="mt-3 text-2xl font-black">
+                  Delete <%= category.title %>?
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-400">
+                  Categories containing games cannot be deleted. Enter the admin password to continue.
+                </p>
+
+                <form
+                  action="/categories/<%= category.id %>/delete"
+                  method="POST"
+                  class="mt-6 space-y-5"
+                >
+                  <div>
+                    <label
+                      for="admin_password_<%= category.id %>"
+                      class="mb-2 block text-sm font-bold text-slate-200"
+                    >
+                      Admin password
+                    </label>
+
+                    <input
+                      type="password"
+                      id="admin_password_<%= category.id %>"
+                      name="admin_password"
+                      required
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-red-400"
+                    >
+                  </div>
+
+                  <div class="flex justify-end gap-3">
+                    <button
+                      type="button"
+                      onclick="document.getElementById('delete-category-modal-<%= category.id %>').close()"
+                      class="rounded-lg border border-slate-700 px-4 py-2 text-sm font-bold text-slate-300 transition hover:border-slate-500"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      class="rounded-lg bg-red-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-400"
+                    >
+                      Confirm deletion
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+            </dialog>
+
+          <% }) %>
+
+        </section>
+
+      <% } %>
+
+    </main>
+
+  </body>
+
+  <script>
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = savedTheme ? savedTheme === "dark" : prefersDark;
+    document.documentElement.classList.toggle("dark", isDark);
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
+    function updateThemeIcon() {
+      const darkMode = document.documentElement.classList.contains("dark");
+      themeIcon.textContent = darkMode ? "☀️" : "🌙";
+      themeToggle.setAttribute("aria-label", darkMode ? "Switch to light theme" : "Switch to dark theme");
+    }
+    updateThemeIcon();
+    themeToggle.addEventListener("click", () => {
+      const darkMode = document.documentElement.classList.toggle("dark");
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+      updateThemeIcon();
+    });
+  </script>
+</html>

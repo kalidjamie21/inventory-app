@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= game.title %> | GameVault</title>
+
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-white">
+
+    <header class="border-b border-slate-800 bg-slate-950">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <a href="/" class="text-2xl font-black tracking-tight">
+          Game<span class="text-cyan-400">Vault</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm font-medium text-slate-300">
+          <a href="/" class="transition hover:text-cyan-400">
+            Games
+          </a>
+
+          <a href="/categories" class="transition hover:text-cyan-400">
+            Categories
+          </a>
+
+          <a
+            href="/games/new"
+            class="rounded-lg bg-cyan-400 px-4 py-2 font-bold text-slate-950 transition hover:bg-cyan-300"
+          >
+            Add Game
+          </a>
+
+          <button id="theme-toggle" type="button" aria-label="Toggle light and dark theme" class="rounded-lg border border-slate-700 px-3 py-2 text-lg transition hover:border-cyan-400"><span id="theme-icon">☀️</span></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-6 py-10">
+
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition hover:text-cyan-400"
+      >
+        <span>←</span>
+        Back to all games
+      </a>
+
+      <section class="mt-8 grid overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl lg:grid-cols-5">
+
+        <div class="relative min-h-[420px] bg-slate-800 lg:col-span-2">
+          <% if (game.cover_image) { %>
+            <img
+              src="<%= game.cover_image %>"
+              alt="Cover image for <%= game.title %>"
+              class="absolute inset-0 h-full w-full object-cover"
+            >
+          <% } else { %>
+            <div class="flex h-full min-h-[420px] items-center justify-center text-slate-500">
+              No cover image available
+            </div>
+          <% } %>
+        </div>
+
+        <div class="flex flex-col justify-between p-8 sm:p-10 lg:col-span-3">
+
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.25em] text-cyan-400">
+              <%= game.category_title %>
+            </p>
+
+            <h1 class="mt-4 text-4xl font-black tracking-tight sm:text-5xl">
+              <%= game.title %>
+            </h1>
+
+            <div class="mt-6 flex items-center gap-4">
+              <span class="text-3xl font-black text-white">
+                $<%= Number(game.price).toFixed(2) %>
+              </span>
+
+              <span class="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-sm font-semibold text-emerald-400">
+                Available
+              </span>
+            </div>
+
+            <div class="my-8 h-px bg-slate-800"></div>
+
+
+
+            <p class="mt-4 leading-8 text-slate-400">
+              <%= game.description %>
+            </p>
+          </div>
+
+          <div class="mt-10 flex flex-wrap gap-3">
+
+  <a
+    href="/games/<%= game.id %>/edit"
+    class="rounded-lg bg-cyan-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+  >
+    Edit game
+  </a>
+
+  <button
+    type="button"
+    onclick="document.getElementById('delete-modal').showModal()"
+    class="rounded-lg border border-red-400/40 px-5 py-3 text-sm font-bold text-red-400 transition hover:bg-red-400 hover:text-slate-950"
+  >
+    Delete game
+  </button>
+
+</div>
+
+        </div>
+      </section>
+
+    </main>
+
+        <dialog
+      id="delete-modal"
+      class="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-0 text-white shadow-2xl backdrop:bg-slate-950/80"
+    >
+      <div class="p-8">
+
+        <div class="mb-6">
+          <p class="text-sm font-bold uppercase tracking-[0.2em] text-red-400">
+            Admin confirmation
+          </p>
+
+          <h2 class="mt-3 text-2xl font-black">
+            Delete <%= game.title %>?
+          </h2>
+
+          <p class="mt-3 text-sm leading-6 text-slate-400">
+            This action cannot be undone. Enter the admin password to confirm.
+          </p>
+        </div>
+
+        <% if (typeof error !== "undefined" && error) { %>
+          <div class="mb-5 rounded-lg border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-300">
+            <%= error %>
+          </div>
+        <% } %>
+
+        <form
+          action="/games/<%= game.id %>/delete"
+          method="POST"
+          class="space-y-5"
+        >
+          <div>
+            <label
+              for="admin_password"
+              class="mb-2 block text-sm font-bold text-slate-200"
+            >
+              Admin password
+            </label>
+
+            <input
+              type="password"
+              id="admin_password"
+              name="admin_password"
+              required
+              autofocus
+              class="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-red-400"
+            >
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              onclick="document.getElementById('delete-modal').close()"
+              class="rounded-lg border border-slate-700 px-4 py-2 text-sm font-bold text-slate-300 transition hover:border-slate-500"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="rounded-lg bg-red-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-400"
+            >
+              Confirm deletion
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </dialog>
+
+    <% if (typeof error !== "undefined" && error) { %>
+      <script>
+        document.getElementById("delete-modal").showModal();
+      </script>
+    <% } %>
+
+  </body>
+
+  <script>
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = savedTheme ? savedTheme === "dark" : prefersDark;
+    document.documentElement.classList.toggle("dark", isDark);
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
+    function updateThemeIcon() {
+      const darkMode = document.documentElement.classList.contains("dark");
+      themeIcon.textContent = darkMode ? "☀️" : "🌙";
+      themeToggle.setAttribute("aria-label", darkMode ? "Switch to light theme" : "Switch to dark theme");
+    }
+    updateThemeIcon();
+    themeToggle.addEventListener("click", () => {
+      const darkMode = document.documentElement.classList.toggle("dark");
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+      updateThemeIcon();
+    });
+  </script>
+</html>
