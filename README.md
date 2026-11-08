@@ -1,4 +1,4 @@
-# GameVault Inventory: [Live Preview](https://google.com](https://inventory-app-q56f.onrender.com "Go to GameVault")
+# GameVault Inventory: [Live Preview](https://inventory-app-q56f.onrender.com "Go to GameVault")
 
 A full-stack game inventory management application built with Node.js, Express, PostgreSQL, EJS, and Tailwind CSS.
 - Submitted for The Odin Project
