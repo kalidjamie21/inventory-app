@@ -235,7 +235,7 @@
   <script>
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark = savedTheme ? savedTheme === "dark" : prefersDark;
+    const isDark = savedTheme ? savedTheme === "dark" : true;
     document.documentElement.classList.toggle("dark", isDark);
     const themeToggle = document.getElementById("theme-toggle");
     const themeIcon = document.getElementById("theme-icon");
